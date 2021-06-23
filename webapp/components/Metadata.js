@@ -10,7 +10,7 @@ export default class Metadata extends React.Component {
   prettyLabel (string) {
 
     let output = string.charAt(0).toUpperCase() + string.slice(1);
-    return output.replace('_interface_map', '').replace('_', ' ')
+    return output.replace('_interface_map', '').replace(/_/g, ' ')
   }
 
   prettyContent (string) {
