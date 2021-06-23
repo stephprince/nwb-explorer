@@ -3,6 +3,7 @@ import sys
 import numpy as np
 from h5py.h5r import Reference
 from pygeppetto.model import Pointer, GenericArray, PointerElement
+from datetime import datetime
 
 from pynwb import TimeSeries
 from hdmf.common import ElementIdentifiers, VectorData
@@ -23,7 +24,7 @@ nwb_geppetto_mappers = []
 
 
 def is_metadata(value):
-    return isinstance(value, (str, int, float, bool, np.number))
+    return isinstance(value, (str, int, float, bool, datetime, np.number))
 
 
 def is_collection(value):
