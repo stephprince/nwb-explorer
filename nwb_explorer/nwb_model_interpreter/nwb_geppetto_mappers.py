@@ -2,6 +2,7 @@ import logging
 import sys
 import numpy as np
 from h5py.h5r import Reference
+from datetime import datetime
 from pygeppetto.model import Pointer, GenericArray, PointerElement
 
 from pynwb import TimeSeries
@@ -19,11 +20,12 @@ from pygeppetto.model.values import Image, Text, ImportValue, StringArray
 from pygeppetto.model.variables import Variable, TypeToValueMap
 
 
+
 nwb_geppetto_mappers = []
 
 
 def is_metadata(value):
-    return isinstance(value, (str, int, float, bool, np.number))
+    return isinstance(value, (str, int, float, bool, np.number)) #put datetime back here if I want it to be generic
 
 
 def is_collection(value):
@@ -211,7 +213,7 @@ class CompositeListMapper(GenericCompositeMapper):
     generic = True
     @classmethod
     def creates(cls, pynwb_obj):
-        return is_collection(pynwb_obj) and pynwb_obj and not is_metadata(next(iter(pynwb_obj)))
+        return is_collection(pynwb_obj) and pynwb_obj and not is_metadata(next(iter(pynwb_obj))) and not isinstance(next(iter(pynwb_obj)), datetime)
 
     def assign_name_to_type(self, pynwb_obj):
         ''' Use this function to assign custom names to geppetto compositeTypes '''
@@ -262,6 +264,19 @@ class SimpleArrayMapper(NWBGeppettoMapper):
     def creates(cls, value):
         ''' return the supported pynwb types '''
         return is_collection(value) and value and is_metadata(next(iter(value)))
+
+    def create_variable(self, name, pynwb_obj, parent_obj):
+        value = StringArray(tuple(str(v) for v in pynwb_obj))
+        array_variable = self.model_factory.create_simple_array_variable(name, value)
+        return array_variable
+
+
+class DateTimeMapper(NWBGeppettoMapper):
+    generic = True
+
+    @classmethod
+    def creates(cls, pynwb_obj):
+        return is_collection(pynwb_obj) and pynwb_obj and isinstance(next(iter(pynwb_obj)), datetime)
 
     def create_variable(self, name, pynwb_obj, parent_obj):
         value = StringArray(tuple(str(v) for v in pynwb_obj))
