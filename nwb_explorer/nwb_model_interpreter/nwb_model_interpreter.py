@@ -91,10 +91,15 @@ class NWBModelInterpreter(ModelInterpreter):
                 plottable_timeseries = NWBReader.get_plottable_timeseries(time_series)
 
                 unit = guess_units(time_series.unit)
-                time_series_value = GeppettoModelFactory.create_time_series(plottable_timeseries[0], unit)
+                time_series_value = GeppettoModelFactory.create_time_series(plottable_timeseries, unit)
                 if time_series.conversion is not None:
-                    for index, item in enumerate(time_series_value.value):
-                        time_series_value.value[index] = time_series_value.value[index] * time_series.conversion
+                    if len(plottable_timeseries) > 1: # TODO - better way to check if need loop through multiple dimensions
+                        for row, item in enumerate(time_series_value.value):
+                            for col, item2 in enumerate(item):
+                                time_series_value.value[row][col] = time_series_value.value[row][col] * time_series.conversion
+                    else:
+                        for index, item in enumerate(time_series_value.value):
+                            time_series_value.value[index] = time_series_value.value[index] * time_series.conversion
                 stringV = str(time_series_value)
                 return time_series_value
         else:
