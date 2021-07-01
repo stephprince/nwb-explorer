@@ -63,8 +63,8 @@ class NWBReader:
         assert isinstance(values, np.ndarray), "This function is supposed to work with numpy array data"
         # Convert NaN to zeros FIXME if using data for anything else than plotting
         mono_time_series_list = np.nan_to_num(values.transpose(), copy=False).astype(float, copy=False).tolist()
-        if len(values.shape) == 1:
-            mono_time_series_list = [mono_time_series_list]
+        #if len(values.shape) == 1:
+        #    mono_time_series_list = [mono_time_series_list]
         return mono_time_series_list
 
     # @staticmethod

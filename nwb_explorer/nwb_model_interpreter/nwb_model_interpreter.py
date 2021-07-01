@@ -93,7 +93,7 @@ class NWBModelInterpreter(ModelInterpreter):
                 unit = guess_units(time_series.unit)
                 time_series_value = GeppettoModelFactory.create_time_series(plottable_timeseries, unit)
                 if time_series.conversion is not None:
-                    if len(plottable_timeseries) > 1: # TODO - better way to check if need loop through multiple dimensions
+                    if len(time_series.data.shape) > 1: # TODO - better way to check if need loop through multiple dimensions
                         for row, item in enumerate(time_series_value.value):
                             for col, item2 in enumerate(item):
                                 time_series_value.value[row][col] = time_series_value.value[row][col] * time_series.conversion
